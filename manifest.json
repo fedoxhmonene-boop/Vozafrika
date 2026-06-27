@@ -1,0 +1,33 @@
+{
+  "name": "VozAfrika — Curso Vocal",
+  "short_name": "VozAfrika",
+  "description": "Curso Vocal com IA — Soprano, Contralto, Tenor, Baixo. Em Xichangana, Xirhonga, Português e Inglês.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080810",
+  "theme_color": "#D4A843",
+  "orientation": "portrait",
+  "categories": ["music", "education"],
+  "lang": "pt",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%23080810'/><text x='256' y='320' font-size='280' text-anchor='middle'>🎤</text><text x='256' y='460' font-size='60' text-anchor='middle' fill='%23D4A843' font-family='serif' font-weight='900'>VozAfrika</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%23080810'/><text x='256' y='320' font-size='280' text-anchor='middle'>🎤</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "label": "Ecrã inicial VozAfrika",
+      "sizes": "390x844",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VozAfrika</title>
+  <!-- PWA META TAGS -->
+  <meta name="application-name" content="VozAfrika">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="VozAfrika">
+  <meta name="description" content="Curso Vocal com IA — Soprano, Contralto, Tenor, Baixo">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#D4A843">
+  <link rel="manifest" href="manifest.json">
+  <!-- Ícone para iPhone -->
+  <link rel="apple-touch-icon" href="icon-512.png">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+:root{
+  --bg:#080810;--card:#10101C;--card2:#141420;--border:#1C1C2E;
+  --gold:#D4A843;--gold2:#F0C96A;--terra:#C05A32;
+  --green:#27634A;--green2:#3A8F68;--red:#C03245;
+  --text:#EAE6DD;--muted:#6A6A80;--dim:#3A3A50;
+  --soprano:#E07B9B;--contralto:#7B9BE0;--tenor:#E0A87B;--baixo:#7BE0B8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;max-width:480px;margin:0 auto;}
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* LANG */
+#screen-lang{align-items:center;justify-content:center;padding:2rem;background:radial-gradient(ellipse 80% 60% at 50% 20%,#1C0D00 0%,#080810 70%);}
+.brand{text-align:center;margin-bottom:2.5rem;}
+.brand-name{font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:900;color:var(--gold);letter-spacing:-1px;line-height:1;}
+.brand-name span{color:var(--terra);}
+.brand-sub{font-size:0.72rem;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-top:0.4rem;}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;width:100%;max-width:340px;}
+.lang-btn{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1rem;text-align:center;cursor:pointer;transition:all 0.2s;color:var(--text);font-family:'Inter',sans-serif;}
+.lang-btn:hover{border-color:var(--gold);background:var(--card2);transform:translateY(-2px);}
+.lang-btn .flag{font-size:2rem;display:block;margin-bottom:0.4rem;}
+.lang-btn .lname{font-weight:600;font-size:0.9rem;}
+.lang-btn .lsub{font-size:0.72rem;color:var(--muted);margin-top:0.15rem;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:50;}
+.topbar-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--gold);}
+.topbar-logo span{color:var(--terra);}
+.topbar-right{display:flex;align-items:center;gap:0.6rem;}
+.lang-pill{font-size:0.72rem;color:var(--muted);background:var(--card);border:1px solid var(--border);padding:0.28rem 0.65rem;border-radius:20px;cursor:pointer;}
+.pro-pill{background:linear-gradient(135deg,var(--gold),var(--terra));color:#080810;font-size:0.68rem;font-weight:700;padding:0.28rem 0.65rem;border-radius:20px;cursor:pointer;}
+
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg);border-top:1px solid var(--border);display:flex;z-index:50;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0.6rem 0;cursor:pointer;color:var(--muted);font-size:0.62rem;gap:0.2rem;border:none;background:none;font-family:'Inter',sans-serif;transition:color 0.2s;}
+.nav-btn.active{color:var(--gold);}
+.nav-icon{font-size:1.15rem;}
+
+.scroll-content{flex:1;overflow-y:auto;padding:1.1rem 1.1rem 5.5rem;}
+.sec-label{font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;margin-top:1.4rem;}
+.sec-label:first-child{margin-top:0;}
+
+/* HERO */
+.hero-card{background:linear-gradient(135deg,#1a0e02 0%,#0d0d1a 100%);border:1px solid var(--border);border-radius:18px;padding:1.4rem;margin-bottom:1.2rem;position:relative;overflow:hidden;}
+.hero-card::after{content:'♪';position:absolute;right:1rem;top:0;font-size:7rem;opacity:0.04;color:var(--gold);line-height:1;pointer-events:none;}
+.hero-greeting{font-size:0.72rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.3rem;}
+.hero-title{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:700;line-height:1.2;margin-bottom:0.45rem;}
+.hero-title em{color:var(--gold);font-style:normal;}
+.hero-sub{font-size:0.82rem;color:var(--muted);line-height:1.55;margin-bottom:1.1rem;}
+.xp-row{display:flex;align-items:center;gap:0.8rem;}
+.xp-bar-wrap{flex:1;background:var(--border);border-radius:100px;height:5px;}
+.xp-fill{height:5px;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--terra));}
+
+/* NAIPE DETECTOR */
+.naipe-detector{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1rem;}
+.nd-title{font-weight:700;font-size:1rem;margin-bottom:0.25rem;}
+.nd-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1rem;}
+.nd-naipes{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1rem;}
+.nd-naipe{border-radius:10px;padding:0.6rem 0.3rem;text-align:center;border:2px solid transparent;cursor:pointer;transition:all 0.2s;}
+.nd-naipe.soprano{background:#1a0d13;border-color:#E07B9B33;}
+.nd-naipe.contralto{background:#0d1020;border-color:#7B9BE033;}
+.nd-naipe.tenor{background:#1a1200;border-color:#E0A87B33;}
+.nd-naipe.baixo{background:#0d1a16;border-color:#7BE0B833;}
+.nd-naipe.detected.soprano{border-color:var(--soprano);box-shadow:0 0 14px rgba(224,123,155,0.35);}
+.nd-naipe.detected.contralto{border-color:var(--contralto);box-shadow:0 0 14px rgba(123,155,224,0.35);}
+.nd-naipe.detected.tenor{border-color:var(--tenor);box-shadow:0 0 14px rgba(224,168,123,0.35);}
+.nd-naipe.detected.baixo{border-color:var(--baixo);box-shadow:0 0 14px rgba(123,224,184,0.35);}
+.nd-icon{font-size:1.3rem;margin-bottom:0.25rem;}
+.nd-name{font-size:0.72rem;font-weight:600;}
+.nd-range{font-size:0.6rem;color:var(--muted);margin-top:0.1rem;}
+.nd-mic-row{display:flex;align-items:center;gap:0.9rem;}
+.nd-mic{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--terra));border:none;cursor:pointer;font-size:1.4rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.nd-mic.recording{background:linear-gradient(135deg,var(--red),#8B1A2A);animation:ndPulse 1s ease-in-out infinite;}
+@keyframes ndPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+.nd-status{font-size:0.82rem;color:var(--muted);margin-bottom:0.3rem;}
+.nd-result-naipe{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;display:none;}
+.nd-result-naipe.show{display:block;}
+.nd-result-desc{font-size:0.75rem;color:var(--muted);line-height:1.5;display:none;}
+.nd-result-desc.show{display:block;}
+
+/* SOLFEJO */
+.solfejo-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1rem;}
+.solfejo-scale{display:flex;align-items:flex-end;gap:0.35rem;height:90px;margin-bottom:1rem;}
+.sf-note{flex:1;border-radius:6px 6px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:0.4rem;cursor:pointer;transition:all 0.2s;min-width:0;}
+.sf-note:hover,.sf-note.playing{filter:brightness(1.5);transform:scaleY(1.05);transform-origin:bottom;}
+.sf-note-name{font-size:0.7rem;font-weight:700;color:#fff;}
+.sf-note-pt{font-size:0.58rem;color:rgba(255,255,255,0.7);margin-top:0.1rem;}
+.solfejo-waveform{display:flex;align-items:center;justify-content:center;gap:3px;height:28px;margin-bottom:0.7rem;}
+.sbar{width:3px;border-radius:2px;background:var(--gold);transition:height 0.08s;}
+.solfejo-actions{display:flex;gap:0.6rem;}
+.sf-btn{flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:0.55rem 0.4rem;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;text-align:center;}
+.sf-btn:hover{border-color:var(--gold);color:var(--gold);}
+.sf-btn.active{background:linear-gradient(135deg,var(--gold),var(--terra));color:#080810;border-color:transparent;}
+
+/* AI GUIDE */
+.ai-guide{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem;}
+.ai-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--terra));display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+.ai-avatar.speaking{animation:aiPulse 1.2s ease-in-out infinite;}
+@keyframes aiPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,168,67,0.4);}50%{box-shadow:0 0 0 10px rgba(212,168,67,0);}}
+.ai-bubble{flex:1;}
+.ai-name{font-size:0.68rem;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.3rem;}
+.ai-text{font-size:0.85rem;line-height:1.55;}
+.ai-actions{display:flex;gap:0.5rem;margin-top:0.8rem;flex-wrap:wrap;}
+.ai-action-btn{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:0.35rem 0.7rem;font-size:0.75rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;}
+.ai-action-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* RECORD */
+.record-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1rem;text-align:center;}
+.mic-wrap{position:relative;display:inline-block;margin-bottom:0.8rem;}
+.mic-ring{position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(212,168,67,0.2);}
+.mic-ring.active{animation:ringPulse 1s ease-in-out infinite;}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:0.5;}50%{transform:scale(1.15);opacity:1;}}
+.mic-btn{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--terra));border:none;cursor:pointer;font-size:1.7rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.mic-btn.recording{background:linear-gradient(135deg,var(--red),#8B1A2A);}
+.waveform{display:flex;align-items:center;justify-content:center;gap:3px;height:34px;margin-bottom:0.7rem;}
+.wbar{width:4px;border-radius:2px;background:var(--gold);transition:height 0.08s ease;}
+.mic-status{font-size:0.78rem;color:var(--muted);margin-bottom:0.9rem;}
+.score-display{display:none;}
+.score-display.show{display:block;}
+.score-big{font-family:'Playfair Display',serif;font-size:4rem;font-weight:900;color:var(--gold2);line-height:1;margin-bottom:0.2rem;}
+.score-big span{font-size:1.5rem;color:var(--muted);}
+.score-verdict{font-size:0.9rem;font-weight:600;margin-bottom:0.9rem;}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;margin-bottom:1rem;}
+.score-item{background:var(--bg);border-radius:10px;padding:0.5rem 0.3rem;text-align:center;}
+.score-val{font-size:1rem;font-weight:700;color:var(--gold);}
+.score-lbl{font-size:0.58rem;color:var(--muted);margin-top:0.1rem;}
+.score-bars{text-align:left;margin-bottom:1rem;}
+.sbar-row{margin-bottom:0.55rem;}
+.sbar-label{font-size:0.72rem;color:var(--muted);margin-bottom:0.25rem;display:flex;justify-content:space-between;}
+.sbar-track{background:var(--border);border-radius:100px;height:6px;}
+.sbar-fill{height:6px;border-radius:100px;transition:width 1s ease;}
+.feedback-box{background:#0a1a10;border:1px solid var(--green);border-radius:10px;padding:0.9rem;font-size:0.82rem;line-height:1.6;margin-bottom:0.8rem;}
+.retry-btn{width:100%;background:var(--bg);border:1px solid var(--dim);color:var(--muted);border-radius:10px;padding:0.7rem;font-family:'Inter',sans-serif;cursor:pointer;font-size:0.85rem;transition:all 0.2s;}
+.retry-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* SONGS */
+.songs-list{display:flex;flex-direction:column;gap:0.7rem;margin-bottom:1.2rem;}
+.song-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem;display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:all 0.2s;}
+.song-card:hover{border-color:var(--gold2);}
+.song-art{width:46px;height:46px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--card2);}
+.song-info{flex:1;}
+.song-title{font-weight:600;font-size:0.9rem;margin-bottom:0.15rem;}
+.song-artist{font-size:0.72rem;color:var(--muted);margin-bottom:0.25rem;}
+.song-tags{display:flex;gap:0.4rem;flex-wrap:wrap;}
+.song-tag{font-size:0.62rem;background:var(--border);color:var(--muted);padding:0.12rem 0.45rem;border-radius:20px;}
+.song-play{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--terra));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+
+/* CHALLENGES */
+.challenge-list{display:flex;flex-direction:column;gap:0.7rem;margin-bottom:1.2rem;}
+.challenge-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all 0.2s;}
+.challenge-card:hover{border-color:var(--gold2);transform:translateY(-1px);}
+.challenge-card.locked{opacity:0.5;cursor:not-allowed;}
+.challenge-top{padding:1rem;display:flex;align-items:center;gap:0.9rem;}
+.challenge-icon{width:44px;height:44px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+.challenge-icon.easy{background:#0d1f0d;}.challenge-icon.medium{background:#1f150a;}.challenge-icon.hard{background:#1f0a0a;}.challenge-icon.expert{background:#0a0a1f;}
+.challenge-info{flex:1;}
+.challenge-name{font-weight:600;font-size:0.92rem;margin-bottom:0.15rem;}
+.challenge-lang{font-size:0.7rem;color:var(--muted);margin-bottom:0.3rem;}
+.challenge-meta{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+.diff-badge{font-size:0.63rem;padding:0.15rem 0.5rem;border-radius:20px;font-weight:600;}
+.diff-badge.easy{background:#0d2a0d;color:#4CAF50;}.diff-badge.medium{background:#2a1a0a;color:#FF9800;}.diff-badge.hard{background:#2a0a0a;color:#F44336;}.diff-badge.expert{background:#0a0a2a;color:#9C27B0;}
+.naipe-tag{font-size:0.63rem;color:var(--muted);background:var(--border);padding:0.15rem 0.5rem;border-radius:20px;}
+.challenge-score-col{font-size:1.1rem;font-weight:700;color:var(--gold);}
+.challenge-score-col.none{color:var(--dim);font-size:0.8rem;}
+.challenge-bar{height:3px;background:var(--border);}
+.challenge-bar-fill{height:3px;transition:width 0.5s;}
+
+/* ════ PROFILE SCREEN ════ */
+.profile-header{background:linear-gradient(135deg,#1a0e02,#0d0d1a);border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1.2rem;text-align:center;position:relative;overflow:hidden;}
+.profile-header::after{content:'🎵';position:absolute;right:1rem;top:0.5rem;font-size:4rem;opacity:0.06;}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--terra));display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 0.8rem;}
+.profile-name{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.2rem;}
+.profile-naipe{font-size:0.78rem;margin-bottom:0.8rem;}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;}
+.pstat{background:rgba(0,0,0,0.3);border-radius:10px;padding:0.6rem;text-align:center;}
+.pstat-val{font-size:1.3rem;font-weight:700;color:var(--gold);}
+.pstat-lbl{font-size:0.6rem;color:var(--muted);margin-top:0.1rem;}
+
+/* XP PROGRESS */
+.xp-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem;margin-bottom:0.8rem;}
+.xp-card-title{font-weight:600;font-size:0.9rem;margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center;}
+.xp-level-badge{background:linear-gradient(135deg,var(--gold),var(--terra));color:#080810;font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:20px;}
+.xp-bar-big{background:var(--border);border-radius:100px;height:10px;margin-bottom:0.5rem;overflow:hidden;}
+.xp-bar-fill{height:10px;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--terra));transition:width 1s ease;}
+.xp-row-info{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--muted);}
+
+/* ACHIEVEMENTS */
+.achievements-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.7rem;margin-bottom:1rem;}
+.achievement{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0.8rem 0.5rem;text-align:center;transition:all 0.2s;}
+.achievement.unlocked{border-color:var(--gold-dim,#8A6E2F);}
+.achievement.locked{opacity:0.4;}
+.ach-icon{font-size:1.6rem;margin-bottom:0.3rem;}
+.ach-name{font-size:0.65rem;font-weight:600;color:var(--text);margin-bottom:0.1rem;}
+.ach-desc{font-size:0.58rem;color:var(--muted);}
+
+/* CERTIFICATE */
+.cert-card{background:linear-gradient(135deg,#1a1200,#0a0d1a);border:2px solid var(--gold);border-radius:18px;padding:1.5rem;margin-bottom:1rem;text-align:center;position:relative;overflow:hidden;}
+.cert-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(212,168,67,0.08) 0%,transparent 70%);}
+.cert-watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:6rem;opacity:0.03;pointer-events:none;}
+.cert-top{font-size:0.68rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:0.8rem;}
+.cert-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:var(--gold2);margin-bottom:0.3rem;}
+.cert-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:var(--text);margin-bottom:0.3rem;border-bottom:1px solid var(--gold);padding-bottom:0.5rem;}
+.cert-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;margin-bottom:1rem;}
+.cert-naipe-badge{display:inline-block;padding:0.4rem 1.2rem;border-radius:20px;font-size:0.8rem;font-weight:700;margin-bottom:1rem;}
+.cert-progress{background:var(--border);border-radius:100px;height:6px;margin-bottom:0.5rem;}
+.cert-progress-fill{height:6px;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--terra));}
+.cert-progress-label{font-size:0.72rem;color:var(--muted);margin-bottom:1rem;}
+.cert-locked-msg{font-size:0.8rem;color:var(--muted);font-style:italic;margin-bottom:1rem;}
+.cert-download-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--terra));color:#080810;border:none;border-radius:10px;padding:0.85rem;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.2s;}
+.cert-download-btn:hover{opacity:0.9;}
+.cert-download-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* ════ SUBSCRIPTION SCREEN ════ */
+.sub-hero{text-align:center;padding:1.5rem 0 1rem;}
+.sub-hero-icon{font-size:3rem;margin-bottom:0.5rem;}
+.sub-hero-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;margin-bottom:0.4rem;}
+.sub-hero-title em{color:var(--gold);font-style:normal;}
+.sub-hero-sub{font-size:0.82rem;color:var(--muted);line-height:1.55;}
+
+.plan-cards{display:flex;flex-direction:column;gap:0.9rem;margin-bottom:1.2rem;}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.3rem;cursor:pointer;transition:all 0.2s;position:relative;}
+.plan-card:hover{border-color:var(--gold);}
+.plan-card.selected{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold);}
+.plan-card.popular{border-color:var(--terra);}
+.popular-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold),var(--terra));color:#080810;font-size:0.68rem;font-weight:700;padding:0.2rem 0.9rem;border-radius:20px;white-space:nowrap;}
+.plan-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7rem;}
+.plan-name{font-weight:700;font-size:1rem;}
+.plan-price{text-align:right;}
+.plan-amount{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--gold);}
+.plan-period{font-size:0.72rem;color:var(--muted);}
+.plan-save{font-size:0.68rem;color:var(--green2);font-weight:600;margin-top:0.1rem;}
+.plan-features{display:flex;flex-direction:column;gap:0.35rem;}
+.plan-feature{font-size:0.78rem;color:var(--text);display:flex;align-items:center;gap:0.5rem;}
+.plan-feature::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0;}
+.plan-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-top:0.3rem;}
+.plan-radio.checked::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--gold);display:block;}
+
+.payment-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1rem;}
+.payment-title{font-weight:600;font-size:0.95rem;margin-bottom:1rem;}
+.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1rem;}
+.pay-method{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:0.8rem;text-align:center;cursor:pointer;transition:all 0.2s;}
+.pay-method:hover,.pay-method.selected{border-color:var(--gold);}
+.pay-method-icon{font-size:1.4rem;margin-bottom:0.3rem;}
+.pay-method-name{font-size:0.75rem;font-weight:600;}
+.pay-method-sub{font-size:0.62rem;color:var(--muted);margin-top:0.1rem;}
+.pay-field{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.7rem 0.9rem;width:100%;color:var(--text);font-family:'Inter',sans-serif;font-size:0.85rem;margin-bottom:0.7rem;outline:none;transition:border-color 0.2s;}
+.pay-field:focus{border-color:var(--gold);}
+.pay-field::placeholder{color:var(--dim);}
+.pay-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+.pay-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--terra));color:#080810;border:none;border-radius:12px;padding:1rem;font-weight:700;font-size:1rem;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.2s;margin-bottom:0.7rem;}
+.pay-btn:hover{opacity:0.9;}
+.pay-secure{display:flex;align-items:center;justify-content:center;gap:0.4rem;font-size:0.72rem;color:var(--muted);}
+.trial-note{background:#0a1a10;border:1px solid var(--green);border-radius:10px;padding:0.8rem;font-size:0.78rem;line-height:1.55;margin-bottom:1rem;text-align:center;}
+.trial-note strong{color:var(--green2);}
+
+/* SUCCESS */
+.success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem;}
+.success-overlay.show{display:flex;}
+.success-icon{font-size:4rem;margin-bottom:1rem;animation:popIn 0.5s ease;}
+@keyframes popIn{0%{transform:scale(0);}80%{transform:scale(1.1);}100%{transform:scale(1);}}
+.success-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--gold);margin-bottom:0.5rem;}
+.success-sub{font-size:0.9rem;color:var(--muted);line-height:1.6;margin-bottom:1.5rem;}
+.success-btn{background:linear-gradient(135deg,var(--gold),var(--terra));color:#080810;border:none;border-radius:12px;padding:0.9rem 2rem;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:'Inter',sans-serif;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-end;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border-radius:22px 22px 0 0;width:100%;max-height:90vh;overflow-y:auto;padding:1.4rem;border-top:1px solid var(--border);animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 1.2rem;}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.25rem;margin-bottom:0.35rem;}
+.modal-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.1rem;line-height:1.55;}
+.lyrics-box{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem;font-size:0.88rem;line-height:2.2;font-style:italic;}
+.lyrics-line{padding:0.1rem 0.4rem;border-radius:4px;transition:background 0.3s;}
+.lyrics-line.active{background:rgba(212,168,67,0.15);color:var(--gold2);font-weight:500;}
+.modal-melody{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:0.9rem;margin-bottom:1rem;}
+.modal-melody-title{font-size:0.68rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.7rem;}
+.modal-melody-notes{display:flex;align-items:flex-end;gap:0.3rem;height:60px;}
+.mm-note{flex:1;border-radius:5px 5px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:0.3rem;cursor:pointer;transition:all 0.15s;min-width:0;}
+.mm-note:hover{filter:brightness(1.4);}
+.mm-note-name{font-size:0.62rem;font-weight:700;color:#fff;}
+.guide-steps{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1rem;}
+.guide-step{display:flex;align-items:flex-start;gap:0.8rem;background:var(--bg);border-radius:10px;padding:0.75rem;}
+.step-num{width:26px;height:26px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--terra));color:#080810;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.step-text{font-size:0.82rem;line-height:1.5;}
+.ai-listen-btn{width:100%;background:linear-gradient(135deg,#0d1a10,#0a0d1a);border:1px solid var(--green2);color:var(--green2);border-radius:12px;padding:0.85rem;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:0.6rem;margin-bottom:0.7rem;transition:all 0.2s;}
+.record-challenge-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--terra));color:#080810;border:none;border-radius:12px;padding:0.9rem;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:0.7rem;}
+.modal-score{display:none;}
+.modal-score.show{display:block;}
+.close-btn{width:100%;background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:0.75rem;font-family:'Inter',sans-serif;cursor:pointer;margin-top:0.3rem;font-size:0.85rem;}
+</style>
+</head>
+<body>
+
+<!-- LANG -->
+<div class="screen active" id="screen-lang">
+  <div class="brand">
+    <div class="brand-name">Voz<span>Afrika</span></div>
+    <div class="brand-sub">Curso Vocal com IA</div>
+  </div>
+  <p style="font-size:0.9rem;color:var(--muted);margin-bottom:1.2rem;text-align:center;">Escolha o seu idioma</p>
+  <div class="lang-grid">
+    <button class="lang-btn" onclick="startApp('pt','🇲🇿','PT')"><span class="flag">🇲🇿</span><div class="lname">Português</div><div class="lsub">Moçambique</div></button>
+    <button class="lang-btn" onclick="startApp('en','🇬🇧','EN')"><span class="flag">🇬🇧</span><div class="lname">English</div><div class="lsub">International</div></button>
+    <button class="lang-btn" onclick="startApp('xg','🌍','XG')"><span class="flag">🌍</span><div class="lname">Xangana</div><div class="lsub">Xichangana</div></button>
+    <button class="lang-btn" onclick="startApp('rh','🌍','RH')"><span class="flag">🌍</span><div class="lname">Rhonga</div><div class="lsub">Xirhonga</div></button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="screen-home">
+  <div class="topbar">
+    <div class="topbar-logo">Voz<span>Afrika</span></div>
+    <div class="topbar-right">
+      <div class="lang-pill" id="lang-pill">🇲🇿 PT</div>
+      <div class="pro-pill" onclick="goTab('subscribe')">PRO</div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="hero-card">
+      <div class="hero-greeting">Bem-vindo</div>
+      <div class="hero-title">Cante com <em>voz de África</em></div>
+      <div class="hero-sub">Aprenda, grave, receba nota de 0 a 10 — sem sair de casa.</div>
+      <div class="xp-row">
+        <div class="xp-bar-wrap"><div class="xp-fill" style="width:22%"></div></div>
+        <div style="font-size:0.7rem;color:var(--muted);white-space:nowrap">Nível 1 · 220 XP</div>
+      </div>
+    </div>
+
+    <div class="sec-label">DESCOBRIR O SEU NAIPE</div>
+    <div class="naipe-detector">
+      <div class="nd-title">Qual é a sua voz?</div>
+      <div class="nd-sub">Cante "Aaah" — o app detecta se é Soprano, Contralto, Tenor ou Baixo</div>
+      <div class="nd-naipes">
+        <div class="nd-naipe soprano" id="nd-s"><div class="nd-icon">🎶</div><div class="nd-name" style="color:var(--soprano)">Soprano</div><div class="nd-range">C4–C6</div></div>
+        <div class="nd-naipe contralto" id="nd-c"><div class="nd-icon">🎵</div><div class="nd-name" style="color:var(--contralto)">Contralto</div><div class="nd-range">E3–E5</div></div>
+        <div class="nd-naipe tenor" id="nd-t"><div class="nd-icon">🎤</div><div class="nd-name" style="color:var(--tenor)">Tenor</div><div class="nd-range">C3–C5</div></div>
+        <div class="nd-naipe baixo" id="nd-b"><div class="nd-icon">🔊</div><div class="nd-name" style="color:var(--baixo)">Baixo</div><div class="nd-range">E2–E4</div></div>
+      </div>
+      <div class="nd-mic-row">
+        <button class="nd-mic" id="nd-mic-btn" onclick="detectNaipe()">🎤</button>
+        <div>
+          <div class="nd-status" id="nd-status">Toque e cante "Aaah" por 3 segundos</div>
+          <div class="nd-result-naipe" id="nd-result-naipe"></div>
+          <div class="nd-result-desc" id="nd-result-desc"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-label">ESCALA — DO RÉ MI FÁ SOL LÁ SI DÓ</div>
+    <div class="solfejo-card">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:0.25rem;">Aprenda as notas musicais</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;">Toque em cada nota para ouvir · Veja como a escala sobe</div>
+      <div class="solfejo-scale" id="solfejo-scale"></div>
+      <div class="solfejo-waveform" id="sf-wave">
+        <div class="sbar" style="height:4px"></div><div class="sbar" style="height:8px"></div><div class="sbar" style="height:5px"></div><div class="sbar" style="height:10px"></div><div class="sbar" style="height:6px"></div><div class="sbar" style="height:4px"></div><div class="sbar" style="height:9px"></div><div class="sbar" style="height:5px"></div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--muted);text-align:center;margin-bottom:0.8rem" id="sf-playing-text">Toque numa nota para ouvir</div>
+      <div class="solfejo-actions">
+        <button class="sf-btn" onclick="playScale()" id="sf-play-btn">▶ Tocar escala</button>
+        <button class="sf-btn" onclick="sfRecord()" id="sf-rec-btn">🎤 Cantar escala</button>
+      </div>
+    </div>
+
+    <div class="sec-label">GRAVAR E AVALIAR</div>
+    <div class="record-card">
+      <div style="font-size:1rem;font-weight:600;margin-bottom:0.25rem;">Cante e receba a sua nota</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1.1rem;">De 0 a 10 — afinação, timbre, potência e ritmo</div>
+      <div class="mic-wrap">
+        <div class="mic-ring" id="mic-ring"></div>
+        <button class="mic-btn" id="mic-btn" onclick="toggleRecord()">🎤</button>
+      </div>
+      <div class="waveform" id="waveform">
+        <div class="wbar" style="height:6px"></div><div class="wbar" style="height:14px"></div><div class="wbar" style="height:9px"></div><div class="wbar" style="height:20px"></div><div class="wbar" style="height:12px"></div><div class="wbar" style="height:7px"></div><div class="wbar" style="height:17px"></div><div class="wbar" style="height:10px"></div><div class="wbar" style="height:22px"></div><div class="wbar" style="height:8px"></div><div class="wbar" style="height:15px"></div><div class="wbar" style="height:11px"></div>
+      </div>
+      <div class="mic-status" id="mic-status">Toque para começar a gravar</div>
+      <div class="score-display" id="score-display">
+        <div class="score-big" id="score-num">7<span>/10</span></div>
+        <div class="score-verdict" id="score-verdict"></div>
+        <div class="score-grid">
+          <div class="score-item"><div class="score-val" id="sc-pitch">8.1</div><div class="score-lbl">Afinação</div></div>
+          <div class="score-item"><div class="score-val" id="sc-timbre">6.8</div><div class="score-lbl">Timbre</div></div>
+          <div class="score-item"><div class="score-val" id="sc-power">6.5</div><div class="score-lbl">Potência</div></div>
+          <div class="score-item"><div class="score-val" id="sc-rhythm">7.2</div><div class="score-lbl">Ritmo</div></div>
+        </div>
+        <div class="score-bars">
+          <div class="sbar-row"><div class="sbar-label"><span>Afinação</span><span id="sb1-v">81%</span></div><div class="sbar-track"><div class="sbar-fill" id="sb1-fill" style="width:0%;background:linear-gradient(90deg,#27634A,#3A8F68)"></div></div></div>
+          <div class="sbar-row"><div class="sbar-label"><span>Timbre</span><span id="sb2-v">68%</span></div><div class="sbar-track"><div class="sbar-fill" id="sb2-fill" style="width:0%;background:linear-gradient(90deg,var(--gold),#F0C96A)"></div></div></div>
+          <div class="sbar-row"><div class="sbar-label"><span>Potência</span><span id="sb3-v">65%</span></div><div class="sbar-track"><div class="sbar-fill" id="sb3-fill" style="width:0%;background:linear-gradient(90deg,var(--terra),#E07040)"></div></div></div>
+          <div class="sbar-row"><div class="sbar-label"><span>Ritmo</span><span id="sb4-v">72%</span></div><div class="sbar-track"><div class="sbar-fill" id="sb4-fill" style="width:0%;background:linear-gradient(90deg,#6040C0,#9060E0)"></div></div></div>
+        </div>
+        <div class="feedback-box" id="feedback-box"></div>
+        <button class="retry-btn" onclick="resetRecord()">↩ Gravar novamente</button>
+      </div>
+    </div>
+
+    <div class="sec-label">MÚSICAS SUGERIDAS</div>
+    <div class="songs-list" id="songs-list"></div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn active" onclick="goTab('home')"><span class="nav-icon">🏠</span><span>Início</span></button>
+    <button class="nav-btn" onclick="goTab('challenges')"><span class="nav-icon">🏆</span><span>Desafios</span></button>
+    <button class="nav-btn" onclick="goTab('profile')"><span class="nav-icon">👤</span><span>Perfil</span></button>
+    <button class="nav-btn" onclick="goTab('subscribe')"><span class="nav-icon">⭐</span><span>PRO</span></button>
+  </div>
+</div>
+
+<!-- CHALLENGES -->
+<div class="screen" id="screen-challenges">
+  <div class="topbar">
+    <div class="topbar-logo">Voz<span>Afrika</span></div>
+    <div class="topbar-right"><div class="pro-pill" onclick="goTab('subscribe')">PRO</div></div>
+  </div>
+  <div class="scroll-content">
+    <div class="sec-label">DESAFIOS VOCAIS</div>
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.9rem">Cante, grave e receba nota de 0 a 10. Complete todos os naipes!</div>
+    <div class="challenge-list" id="challenge-list"></div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="goTab('home')"><span class="nav-icon">🏠</span><span>Início</span></button>
+    <button class="nav-btn active" onclick="goTab('challenges')"><span class="nav-icon">🏆</span><span>Desafios</span></button>
+    <button class="nav-btn" onclick="goTab('profile')"><span class="nav-icon">👤</span><span>Perfil</span></button>
+    <button class="nav-btn" onclick="goTab('subscribe')"><span class="nav-icon">⭐</span><span>PRO</span></button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="screen" id="screen-profile">
+  <div class="topbar">
+    <div class="topbar-logo">Voz<span>Afrika</span></div>
+    <div class="topbar-right"><div class="pro-pill" onclick="goTab('subscribe')">PRO</div></div>
+  </div>
+  <div class="scroll-content">
+
+    <div class="profile-header">
+      <div class="profile-avatar">🎤</div>
+      <div class="profile-name" id="prof-name">Cantor VozAfrika</div>
+      <div class="profile-naipe" id="prof-naipe" style="color:var(--tenor)">🎤 Naipe: Tenor</div>
+      <div class="profile-stats">
+        <div class="pstat"><div class="pstat-val">7</div><div class="pstat-lbl">Sessões</div></div>
+        <div class="pstat"><div class="pstat-val">8.2</div><div class="pstat-lbl">Melhor nota</div></div>
+        <div class="pstat"><div class="pstat-val">3</div><div class="pstat-lbl">Desafios</div></div>
+      </div>
+    </div>
+
+    <div class="sec-label">PROGRESSO XP</div>
+    <div class="xp-card">
+      <div class="xp-card-title">Nível 1 — Iniciante <span class="xp-level-badge">220 XP</span></div>
+      <div class="xp-bar-big"><div class="xp-bar-fill" id="xp-bar-fill" style="width:22%"></div></div>
+      <div class="xp-row-info"><span>0 XP</span><span>220 / 1000 XP para Nível 2</span><span>1000 XP</span></div>
+    </div>
+
+    <div class="sec-label">CONQUISTAS</div>
+    <div class="achievements-grid" id="achievements-grid"></div>
+
+    <div class="sec-label">CERTIFICADO VOCAL</div>
+    <div class="cert-card">
+      <div class="cert-watermark">🏆</div>
+      <div class="cert-top">VozAfrika · Certificado Oficial</div>
+      <div class="cert-title">Certificado de Conclusão</div>
+      <div class="cert-name" id="cert-name">Cantor VozAfrika</div>
+      <div class="cert-desc">Concluiu com sucesso o Curso Vocal VozAfrika, demonstrando competência em técnica vocal, afinação e repertório em línguas moçambicanas.</div>
+      <div class="cert-naipe-badge" id="cert-naipe-badge" style="background:rgba(224,168,123,0.15);color:var(--tenor);border:1px solid var(--tenor)">🎤 Naipe Tenor</div>
+      <div class="cert-progress"><div class="cert-progress-fill" id="cert-progress-fill" style="width:25%"></div></div>
+      <div class="cert-progress-label" id="cert-progress-label">3 de 12 desafios concluídos — complete todos para desbloquear</div>
+      <div class="cert-locked-msg" id="cert-locked-msg">🔒 Complete todos os 12 desafios para receber o certificado</div>
+      <button class="cert-download-btn" id="cert-download-btn" onclick="downloadCert()" disabled>🏆 Descarregar Certificado</button>
+    </div>
+
+    <div class="sec-label">HISTÓRICO</div>
+    <div id="history-list-prof"></div>
+
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="goTab('home')"><span class="nav-icon">🏠</span><span>Início</span></button>
+    <button class="nav-btn" onclick="goTab('challenges')"><span class="nav-icon">🏆</span><span>Desafios</span></button>
+    <button class="nav-btn active" onclick="goTab('profile')"><span class="nav-icon">👤</span><span>Perfil</span></button>
+    <button class="nav-btn" onclick="goTab('subscribe')"><span class="nav-icon">⭐</span><span>PRO</span></button>
+  </div>
+</div>
+
+<!-- SUBSCRIBE -->
+<div class="screen" id="screen-subscribe">
+  <div class="topbar">
+    <div class="topbar-logo">Voz<span>Afrika</span></div>
+    <div class="topbar-right"><div class="lang-pill" onclick="goTab('home')">← Voltar</div></div>
+  </div>
+  <div class="scroll-content">
+
+    <div class="sub-hero">
+      <div class="sub-hero-icon">🎤</div>
+      <div class="sub-hero-title">Acesso <em>Completo</em></div>
+      <div class="sub-hero-sub">Desbloqueie todas as lições, desafios, correção vocal com IA e o seu certificado.</div>
+    </div>
+
+    <div class="trial-note">🎁 <strong>7 dias grátis</strong> — cancele quando quiser. Sem compromisso.</div>
+
+    <div class="sec-label">ESCOLHA O SEU PLANO</div>
+    <div class="plan-cards">
+      <div class="plan-card" id="plan-monthly" onclick="selectPlan('monthly')">
+        <div class="plan-top">
+          <div>
+            <div class="plan-name">Mensal</div>
+            <div style="font-size:0.72rem;color:var(--muted)">Flexível</div>
+          </div>
+          <div class="plan-price">
+            <div class="plan-amount">$4.99</div>
+            <div class="plan-period">/mês</div>
+          </div>
+        </div>
+        <div class="plan-features">
+          <div class="plan-feature">42 lições em 4 naipes vocais</div>
+          <div class="plan-feature">Detecção vocal com IA</div>
+          <div class="plan-feature">12 desafios + certificado</div>
+        </div>
+        <div class="plan-radio" id="radio-monthly"></div>
+      </div>
+
+      <div class="plan-card popular selected" id="plan-annual" onclick="selectPlan('annual')">
+        <div class="popular-badge">⭐ Mais popular — Melhor valor</div>
+        <div class="plan-top" style="margin-top:0.5rem">
+          <div>
+            <div class="plan-name">Anual</div>
+            <div style="font-size:0.72rem;color:var(--muted)">2 meses grátis</div>
+          </div>
+          <div class="plan-price">
+            <div class="plan-amount">$39.99</div>
+            <div class="plan-period">/ano</div>
+            <div class="plan-save">Poupa $20/ano</div>
+          </div>
+        </div>
+        <div class="plan-features">
+          <div class="plan-feature">Tudo do plano Mensal</div>
+          <div class="plan-feature">Canções exclusivas Shangaan & Rhonga</div>
+          <div class="plan-feature">Certificado físico por email</div>
+          <div class="plan-feature">Suporte prioritário</div>
+        </div>
+        <div class="plan-radio checked" id="radio-annual"></div>
+      </div>
+    </div>
+
+    <div class="sec-label">MÉTODO DE PAGAMENTO</div>
+    <div class="payment-section">
+      <div class="payment-title">Escolha como quer pagar</div>
+      <div class="payment-methods">
+        <div class="pay-method selected" id="pm-card" onclick="selectPayMethod('card')">
+          <div class="pay-method-icon">💳</div>
+          <div class="pay-method-name">Cartão</div>
+          <div class="pay-method-sub">Visa / Mastercard</div>
+        </div>
+        <div class="pay-method" id="pm-mpesa" onclick="selectPayMethod('mpesa')">
+          <div class="pay-method-icon">📱</div>
+          <div class="pay-method-name">M-Pesa</div>
+          <div class="pay-method-sub">Moçambique</div>
+        </div>
+        <div class="pay-method" id="pm-paypal" onclick="selectPayMethod('paypal')">
+          <div class="pay-method-icon">🅿️</div>
+          <div class="pay-method-name">PayPal</div>
+          <div class="pay-method-sub">Internacional</div>
+        </div>
+        <div class="pay-method" id="pm-emola" onclick="selectPayMethod('emola')">
+          <div class="pay-method-icon">📲</div>
+          <div class="pay-method-name">e-Mola</div>
+          <div class="pay-method-sub">Moçambique</div>
+        </div>
+      </div>
+
+      <div id="payment-fields">
+        <input class="pay-field" placeholder="Nome no cartão" id="pay-name">
+        <input class="pay-field" placeholder="Número do cartão" maxlength="19" id="pay-card" oninput="formatCard(this)">
+        <div class="pay-row">
+          <input class="pay-field" placeholder="MM/AA" maxlength="5" id="pay-expiry" oninput="formatExpiry(this)">
+          <input class="pay-field" placeholder="CVV" maxlength="3" id="pay-cvv" type="password">
+        </div>
+      </div>
+
+      <div id="mpesa-fields" style="display:none">
+        <input class="pay-field" placeholder="Número M-Pesa (ex: 84 XXX XXXX)" id="pay-mpesa">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.7rem">Irá receber um SMS para confirmar o pagamento</div>
+      </div>
+
+      <div id="paypal-fields" style="display:none">
+        <input class="pay-field" placeholder="Email PayPal" id="pay-paypal" type="email">
+      </div>
+
+      <div id="emola-fields" style="display:none">
+        <input class="pay-field" placeholder="Número e-Mola (ex: 86 XXX XXXX)" id="pay-emola">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.7rem">Irá receber um SMS para confirmar o pagamento</div>
+      </div>
+
+      <button class="pay-btn" onclick="processPayment()" id="pay-btn">🔒 Subscrever via Hotmart</button>
+      <div class="pay-secure">🔐 Pagamento seguro via <strong>Hotmart</strong> · Cancele a qualquer momento</div><div style="text-align:center;margin-top:0.7rem"><img src="https://static.hotmart.com/img/hotmart-logo.svg" onerror="this.style.display='none'" style="height:20px;opacity:0.5"> <span style="font-size:0.7rem;color:var(--muted)">Aceita cartão, PayPal e mais</span></div>
+    </div>
+
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="goTab('home')"><span class="nav-icon">🏠</span><span>Início</span></button>
+    <button class="nav-btn" onclick="goTab('challenges')"><span class="nav-icon">🏆</span><span>Desafios</span></button>
+    <button class="nav-btn" onclick="goTab('profile')"><span class="nav-icon">👤</span><span>Perfil</span></button>
+    <button class="nav-btn active" onclick="goTab('subscribe')"><span class="nav-icon">⭐</span><span>PRO</span></button>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-icon">🎉</div>
+  <div class="success-title">Bem-vindo ao PRO!</div>
+  <div class="success-sub">O seu acesso completo está ativo.<br>7 dias grátis — aproveite todas as lições, desafios e o seu certificado!</div>
+  <button class="success-btn" onclick="closeSuccess()">Começar a cantar 🎤</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOut(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div class="guide-steps" id="modal-steps"></div>
+    <div class="modal-melody" id="modal-melody" style="display:none">
+      <div class="modal-melody-title">MELODIA — SOBE E DESCE</div>
+      <div class="modal-melody-notes" id="modal-melody-notes"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:0.4rem">
+        <span style="font-size:0.6rem;color:var(--muted)">Grave ↓</span>
+        <span style="font-size:0.6rem;color:var(--muted)">Agudo ↑</span>
+      </div>
+    </div>
+    <div id="lyrics-section" style="display:none">
+      <div class="sec-label" style="margin-top:0">LETRA</div>
+      <div class="lyrics-box" id="lyrics-box"></div>
+    </div>
+    <button class="ai-listen-btn" onclick="aiModalListen()">🎧 <span id="modal-listen-text">Ouvir guia de IA cantar</span></button>
+    <button class="record-challenge-btn" id="modal-rec-btn" onclick="startChallengeRecord()">🎙️ Gravar a minha versão</button>
+    <div class="modal-score" id="modal-score">
+      <div class="score-big" id="modal-score-num">8<span>/10</span></div>
+      <div class="score-verdict" id="modal-score-verdict"></div>
+      <div class="score-grid">
+        <div class="score-item"><div class="score-val" id="msc-pitch">8.4</div><div class="score-lbl">Afinação</div></div>
+        <div class="score-item"><div class="score-val" id="msc-timbre">7.9</div><div class="score-lbl">Timbre</div></div>
+        <div class="score-item"><div class="score-val" id="msc-power">7.5</div><div class="score-lbl">Potência</div></div>
+        <div class="score-item"><div class="score-val" id="msc-rhythm">7.8</div><div class="score-lbl">Ritmo</div></div>
+      </div>
+      <div class="feedback-box" id="modal-feedback"></div>
+    </div>
+    <button class="close-btn" onclick="closeModal()">Fechar</button>
+  </div>
+</div>
+
+<script>
+/* ═══ DATA ═══ */
+const NOTES=[
+  {name:'Do',pt:'Dó',color:'#C03245',h:35},{name:'Re',pt:'Ré',color:'#C05A32',h:42},
+  {name:'Mi',pt:'Mi',color:'#C07830',h:50},{name:'Fa',pt:'Fá',color:'#C0A030',h:58},
+  {name:'Sol',pt:'Sol',color:'#6BA832',h:66},{name:'La',pt:'Lá',color:'#3298C0',h:74},
+  {name:'Si',pt:'Si',color:'#7032C0',h:82},{name:'Do2',pt:'Dó²',color:'#C03245',h:90},
+];
+const SONGS=[
+  {id:1,emoji:'🌅',title:'Wangu Mungu',artist:'Tradicional Shangaan',naipe:'Soprano',tags:['Xangana','Fácil'],melody:[4,5,6,7,6,5,4,3],lyrics:['Wangu Mungu, ndzi pfuka,','Ndzi yimba hi ku rhandza,','Rito ra mina ri tlhandleka,','Ku fika eka wena.','Wangu Mungu, ndzi tiva,','Uri Nkulukumba wa mina.']},
+  {id:2,emoji:'🌊',title:'Matsalwa ya Mina',artist:'Coral Moçambique',naipe:'Tenor',tags:['Rhonga','Médio'],melody:[2,3,4,5,4,3,2,1],lyrics:['Matsalwa ya mina ya huma,','Hi ku yimba ni wena,','Ndzwi ra mina ri tlhandleka,','Eka ntshaho wa Afrika.','Matsalwa ya hina ya huma,','Hi ku yimba hinkwaxo.']},
+  {id:3,emoji:'🦁',title:'Terra da Esperança',artist:'VozAfrika',naipe:'Todos',tags:['Português','Iniciante'],melody:[3,4,5,6,7,6,5,4],lyrics:['Terra da esperança, minha voz te chama,','Canto com alegria, alma de Moçambique,','Cada nota que eu solto, sobe ao céu,','E o mundo escuta o cantor que eu sou.','Terra da esperança, és meu lar,','Cantando contigo, vou voar.']},
+  {id:4,emoji:'🌺',title:'Africa Rising',artist:'VozAfrika',naipe:'Soprano',tags:['English','Médio'],melody:[5,6,7,8,7,6,5,4],lyrics:['Africa rising, voices in the air,','Singing our stories, beyond compare,','Every note a prayer, every breath a song,','This is where we belong.','Africa rising, strong and free,','Our voices echo through eternity.']},
+  {id:5,emoji:'🔥',title:'Nkanelo wa Xirhonga',artist:'Coral Tradicional',naipe:'Tenor',tags:['Rhonga','Difícil'],melody:[1,2,3,4,5,6,7,8],lyrics:['Nkanelo wa Xirhonga u tlhandleka,','Tindzwi ta hina ti huma hi matimba,','Hi yimba hi ku rhandza ka hina,','Afrika, yi tiva ndzwi ra hina.','Nkanelo wa hina wu tlhandleka,','Ku fika eka hosi ya matimba.']},
+  {id:6,emoji:'⭐',title:'Voz do Índico',artist:'VozAfrika',naipe:'Baixo',tags:['Português','Avançado'],melody:[6,5,4,3,2,1,2,3],lyrics:['Do fundo do oceano Índico sobe o meu canto,','Grave e profundo como a terra que piso,','Cada acorde que entoa o meu peito,','É a voz da África que eu não esqueci.','Do fundo da terra, grave e sereno,','A voz do Baixo enche o universo.']},
+  {id:7,emoji:'🌙',title:'Usiku wa Afrika',artist:'Coral Shangaan',naipe:'Contralto',tags:['Xangana','Médio'],melody:[5,4,3,4,5,6,5,4],lyrics:['Usiku wa Afrika wu lulamile,','Ndzi yimba hi ku rhandza,','Rito ra Contralto ri huma,','Hi ku tiva Afrika ya hina.','Usiku wu lulamile, ndzi yimba,','Ku fika ekuseni ka Afrika.']},
+  {id:8,emoji:'🕊️',title:'Pomba da Paz',artist:'VozAfrika',naipe:'Soprano',tags:['Português','Fácil'],melody:[4,5,6,7,8,7,6,5],lyrics:['Pomba da paz, voa alto,','Leva a minha voz ao céu,','Soprano que sobe e canta,','Com amor e com fé.','Pomba da paz, ensina-me,','A cantar com pureza e verdade.']},
+  {id:9,emoji:'🌿',title:'Muti wa Hina',artist:'Coral Xirhonga',naipe:'Baixo',tags:['Rhonga','Iniciante'],melody:[3,2,1,2,3,4,3,2],lyrics:['Muti wa hina wu lulamile,','Hi yimba hi matimba,','Tindzwi ta Baixo ti tlhandleka,','Eka ntshaho wa Afrika.','Muti wa hina, hi yimba,','Hi ku rhandza ka hina.']},
+  {id:10,emoji:'🎊',title:'Celebration Song',artist:'VozAfrika',naipe:'Todos',tags:['English','Fácil'],melody:[5,6,7,6,5,4,5,6],lyrics:['Celebrate the voice inside you,','Let it rise and fill the sky,','Every singer has a story,','Let your voice reach up high.','Celebrate with every note,','Africa\'s song will never die.']},
+];
+const CHALLENGES=[
+  {id:1,emoji:'🌱',name:'Primeira Nota',lang:'Português',diff:'easy',naipe:'Todos',done:true,score:7.5,songId:3,desc:'O seu primeiro desafio! Cante a primeira linha e receba a sua nota.',steps:['Ouça o guia de IA cantar a linha','Inspire fundo antes de começar','Cante com calma']},
+  {id:2,emoji:'🌅',name:'Manhã Shangaan',lang:'Xichangana',diff:'easy',naipe:'Soprano',done:true,score:6.8,songId:1,desc:'Canção matinal tradicional Shangaan. Ideal para Sopranos.',steps:['Escute a melodia 2 vezes','Veja como a melodia sobe e desce','Grave a sua versão']},
+  {id:3,emoji:'🌊',name:'Rio Rhonga',lang:'Xirhonga',diff:'medium',naipe:'Tenor',done:true,score:8.2,songId:2,desc:'Melodia Rhonga para vozes masculinas.',steps:['Aqueça a voz 2 minutos','Ouça o guia de IA','Cante as 6 linhas completas']},
+  {id:4,emoji:'🦁',name:'Esperança em Coro',lang:'Português',diff:'medium',naipe:'Todos',done:false,score:null,songId:3,desc:'Cante "Terra da Esperança" completa.',steps:['Memorize a letra','Ouça o guia 3 vezes','Grave sem parar a meio']},
+  {id:5,emoji:'🌺',name:'Africa Rising',lang:'English',diff:'medium',naipe:'Soprano',done:false,score:null,songId:4,desc:'Melodia ascendente para Sopranos.',steps:['Foque na pronúncia inglesa','Siga o ritmo do guia','Grave com confiança']},
+  {id:6,emoji:'🔥',name:'Nkanelo Difícil',lang:'Xirhonga',diff:'hard',naipe:'Tenor',done:false,score:null,songId:5,desc:'A melodia mais exigente para Tenores.',steps:['Aqueça 5 minutos','Ouça o guia várias vezes','Respire antes de cada frase alta']},
+  {id:7,emoji:'⭐',name:'Voz do Índico',lang:'Português',diff:'expert',naipe:'Baixo',done:false,score:null,songId:6,desc:'Desafio Expert para Baixos.',steps:['Relaxe o maxilar','Sinta a ressonância no peito','Cante devagar']},
+  {id:8,emoji:'🌙',name:'Noite Africana',lang:'Xichangana',diff:'medium',naipe:'Contralto',done:false,score:null,songId:7,desc:'Canção noturna para Contraltos.',steps:['Relaxe os ombros','Cante suave no início','Aumente no refrão']},
+  {id:9,emoji:'🕊️',name:'Pomba Soprano',lang:'Português',diff:'easy',naipe:'Soprano',done:false,score:null,songId:8,desc:'Melodia simples para Sopranos iniciantes.',steps:['Sorria enquanto canta','Não force as notas altas','Respire entre cada linha']},
+  {id:10,emoji:'🌿',name:'Raízes Rhonga',lang:'Xirhonga',diff:'easy',naipe:'Baixo',done:false,score:null,songId:9,desc:'Melodia para Baixos iniciantes.',steps:['Sinta a voz no peito','Cante lento e profundo','Não suba — fique no grave']},
+  {id:11,emoji:'🎊',name:'Celebração Final',lang:'English',diff:'hard',naipe:'Todos',done:false,score:null,songId:10,desc:'Desafio para todos os naipes!',steps:['Escolha o seu naipe','Ouça o guia','Cante do início ao fim']},
+  {id:12,emoji:'🏆',name:'Mestre Vocal',lang:'Português',diff:'expert',naipe:'Todos',done:false,score:null,songId:3,desc:'O desafio máximo. Complete todos os outros primeiro.',steps:['Complete todos os desafios','Grave sem o guia','Receba o Certificado VozAfrika']},
+];
+const ACHIEVEMENTS=[
+  {icon:'🎤',name:'Primeira Voz',desc:'1ª gravação',unlocked:true},
+  {icon:'🌱',name:'Iniciante',desc:'Primeiro desafio',unlocked:true},
+  {icon:'🎵',name:'Nota Perfeita',desc:'Nota 9 ou 10',unlocked:false},
+  {icon:'🌍',name:'Multilíngue',desc:'3 línguas',unlocked:false},
+  {icon:'🏆',name:'Campeão',desc:'5 desafios',unlocked:false},
+  {icon:'⭐',name:'Estrela',desc:'Nota 10',unlocked:false},
+  {icon:'🎶',name:'Coral',desc:'4 naipes',unlocked:false},
+  {icon:'🔥',name:'Em Chama',desc:'7 dias seguidos',unlocked:false},
+  {icon:'🏅',name:'Mestre',desc:'12 desafios',unlocked:false},
+];
+const VERDICTS={10:'Perfeito! Voz de profissional 🌟',9:'Extraordinário! 🎉',8:'Excelente! 🔥',7:'Muito bom! Continue 🎵',6:'Bom! Quase lá 👏',5:'Razoável — pratique mais 💪',4:'Continue — a voz está a aparecer 🌱',3:"Não desista!",2:'Tente de novo',1:'Respire e tente outra vez'};
+const FEEDBACKS=['A sua afinação está boa! Trabalhe mais a potência — inspire mais fundo antes de cada frase.','Bom timbre! Relaxe o maxilar e deixe a voz fluir mais abertamente.','O ritmo estava ligeiramente adiantado. Ouça mais o guia antes de gravar.','Excelente potência! Agora foque na afinação — siga a melodia do guia.','Boa tentativa! A respiração diafragmática vai elevar muito a sua nota.','O seu naipe está a aparecer! Pratique as notas centrais da sua extensão vocal.','Muito bom ritmo! Trabalhe o timbre — abra mais a boca ao cantar.'];
+const NAIPE_INFO={soprano:{name:'Soprano',color:'var(--soprano)',desc:'Voz feminina mais aguda — melodias principais nos coros.'},contralto:{name:'Contralto',color:'var(--contralto)',desc:'Voz feminina mais grave — profundidade e calor no coro.'},tenor:{name:'Tenor',color:'var(--tenor)',desc:'Voz masculina aguda — melodias principais em coros masculinos Shangaan.'},baixo:{name:'Baixo',color:'var(--baixo)',desc:'Voz masculina mais grave — alicerce e estabilidade do coro.'}};
+
+/* ═══ STATE ═══ */
+let detectedNaipe='tenor';
+let recording=false;
+let waveInt=null;
+let currentChallenge=null;
+let challengeRecording=false;
+let challengeListening=false;
+let lyricInt=null;
+let selectedPlan='annual';
+let selectedPayMethod='card';
+let isPro=false;
+let sfWaveInt=null;
+let noteTimeout=null;
+let scalePlaying=false;
+
+/* ═══ INIT ═══ */
+function startApp(l,flag,code){
+  document.getElementById('lang-pill').textContent=flag+' '+code;
+  showScreen('screen-home');
+  buildSolfejo();
+  renderSongs();
+  renderChallenges();
+  renderAchievements();
+  renderHistoryProf();
+}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goTab(tab){
+  const map={home:'screen-home',challenges:'screen-challenges',profile:'screen-profile',subscribe:'screen-subscribe'};
+  showScreen(map[tab]||'screen-home');
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{b.classList.toggle('active',['home','challenges','profile','subscribe'][i]===tab);});
+  if(tab==='profile') updateProfileNaipe();
+}
+
+/* ═══ NAIPE ═══ */
+function detectNaipe(){
+  const btn=document.getElementById('nd-mic-btn');
+  if(btn.classList.contains('recording'))return;
+  btn.classList.add('recording');btn.textContent='⏹';
+  document.getElementById('nd-status').textContent='🔴 A analisar a sua voz...';
+  setTimeout(()=>{
+    const naipes=['soprano','contralto','tenor','baixo'];
+    const picked=naipes[Math.floor(Math.random()*naipes.length)];
+    detectedNaipe=picked;
+    showNaipeResult(picked);
+    btn.classList.remove('recording');btn.textContent='🔄';
+  },3500);
+}
+function showNaipeResult(picked){
+  const info=NAIPE_INFO[picked];
+  const map={soprano:'nd-s',contralto:'nd-c',tenor:'nd-t',baixo:'nd-b'};
+  ['nd-s','nd-c','nd-t','nd-b'].forEach((id,i)=>{document.getElementById(id).className='nd-naipe '+['soprano','contralto','tenor','baixo'][i];});
+  document.getElementById(map[picked]).classList.add('detected',picked);
+  const rn=document.getElementById('nd-result-naipe');
+  rn.style.color=info.color;rn.textContent='✓ '+info.name;rn.classList.add('show');
+  document.getElementById('nd-result-desc').textContent=info.desc;document.getElementById('nd-result-desc').classList.add('show');
+  document.getElementById('nd-status').textContent='Naipe detectado!';
+  updateProfileNaipe();
+}
+function updateProfileNaipe(){
+  const info=NAIPE_INFO[detectedNaipe];
+  document.getElementById('prof-naipe').textContent='🎤 Naipe: '+info.name;
+  document.getElementById('prof-naipe').style.color=info.color;
+  document.getElementById('cert-naipe-badge').textContent='🎤 Naipe '+info.name;
+  document.getElementById('cert-naipe-badge').style.color=info.color;
+  document.getElementById('cert-naipe-badge').style.borderColor=info.color;
+}
+
+/* ═══ SOLFEJO ═══ */
+function buildSolfejo(){
+  document.getElementById('solfejo-scale').innerHTML=NOTES.map((n,i)=>`<div class="sf-note" id="sf-${i}" onclick="playNote(${i})" style="background:${n.color}22;border:1px solid ${n.color}44;height:${n.h}%"><div class="sf-note-name" style="color:${n.color}">${n.name}</div><div class="sf-note-pt" style="color:${n.color}99">${n.pt}</div></div>`).join('');
+}
+function playNote(i){
+  const n=NOTES[i];
+  document.querySelectorAll('.sf-note').forEach(el=>el.classList.remove('playing'));
+  document.getElementById('sf-'+i).classList.add('playing');
+  document.getElementById('sf-playing-text').textContent=`♪ ${n.pt} (${n.name}) — nota ${i+1} da escala`;
+  animateSfWave(true,n.color);
+  clearTimeout(noteTimeout);
+  noteTimeout=setTimeout(()=>{document.getElementById('sf-'+i).classList.remove('playing');animateSfWave(false,'var(--gold)');document.getElementById('sf-playing-text').textContent='Toque numa nota para ouvir';},1500);
+}
+function animateSfWave(on,color){
+  const bars=document.querySelectorAll('#sf-wave .sbar');
+  clearInterval(sfWaveInt);
+  if(on){sfWaveInt=setInterval(()=>{bars.forEach(b=>{b.style.height=(Math.random()*14+3)+'px';b.style.background=color;});},80);}
+  else{const h=[4,8,5,10,6,4,9,5];bars.forEach((b,i)=>{b.style.height=h[i]+'px';b.style.background='var(--gold)';});}
+}
+function playScale(){
+  if(scalePlaying)return;
+  scalePlaying=true;
+  const btn=document.getElementById('sf-play-btn');
+  btn.classList.add('active');btn.textContent='▶ A tocar...';
+  let idx=0;
+  function next(){
+    if(idx>=NOTES.length){scalePlaying=false;btn.classList.remove('active');btn.textContent='▶ Tocar escala';document.querySelectorAll('.sf-note').forEach(el=>el.classList.remove('playing'));animateSfWave(false,'var(--gold)');document.getElementById('sf-playing-text').textContent='Escala completa! 🎵';return;}
+    playNote(idx++);setTimeout(next,1600);
+  }
+  next();
+}
+function sfRecord(){
+  const btn=document.getElementById('sf-rec-btn');
+  btn.classList.add('active');btn.textContent='🔴 A gravar...';
+  setTimeout(()=>{btn.classList.remove('active');btn.textContent='🎤 Cantar escala';document.getElementById('sf-playing-text').textContent='✓ Escala gravada! Boa tentativa!';},4000);
+}
+
+/* ═══ SONGS ═══ */
+function renderSongs(){
+  document.getElementById('songs-list').innerHTML=SONGS.slice(0,5).map(s=>`<div class="song-card" onclick="openSong(${s.id})"><div class="song-art">${s.emoji}</div><div class="song-info"><div class="song-title">${s.title}</div><div class="song-artist">${s.artist} · ${s.naipe}</div><div class="song-tags">${s.tags.map(t=>`<span class="song-tag">${t}</span>`).join('')}</div></div><button class="song-play">▶</button></div>`).join('');
+}
+
+/* ═══ CHALLENGES ═══ */
+function renderChallenges(){
+  document.getElementById('challenge-list').innerHTML=CHALLENGES.map((c,i)=>{
+    const locked=i>3&&!c.done;
+    const barW=c.done?(c.score/10*100):0;
+    const barC=c.diff==='easy'?'#3A8F68':c.diff==='medium'?'#D4A843':c.diff==='hard'?'#C03245':'#9060E0';
+    const diffLabel=c.diff==='easy'?'Fácil':c.diff==='medium'?'Médio':c.diff==='hard'?'Difícil':'Expert';
+    return `<div class="challenge-card${locked?' locked':''}" onclick="${!locked?`openChallenge(${c.id})`:''}">
+      <div class="challenge-top">
+        <div class="challenge-icon ${c.diff}">${c.emoji}</div>
+        <div class="challenge-info">
+          <div class="challenge-name">${c.name}</div>
+          <div class="challenge-lang">${c.lang}</div>
+          <div class="challenge-meta"><span class="diff-badge ${c.diff}">${locked?'🔒 ':''}${diffLabel}</span><span class="naipe-tag">${c.naipe}</span></div>
+        </div>
+        <div class="challenge-score-col ${c.done?'':'none'}">${c.done?c.score.toFixed(1):'—'}</div>
+      </div>
+      <div class="challenge-bar"><div class="challenge-bar-fill" style="width:${barW}%;background:${barC}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══ ACHIEVEMENTS ═══ */
+function renderAchievements(){
+  document.getElementById('achievements-grid').innerHTML=ACHIEVEMENTS.map(a=>`<div class="achievement ${a.unlocked?'unlocked':'locked'}"><div class="ach-icon">${a.icon}</div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div>`).join('');
+}
+
+/* ═══ HISTORY ═══ */
+function renderHistoryProf(){
+  const items=[{score:8.2,song:'Rio Rhonga',date:'Hoje, 14:32',naipe:'Tenor'},{score:7.5,song:'Terra da Esperança',date:'Ontem, 10:15',naipe:'Tenor'},{score:6.8,song:'Manhã Shangaan',date:'23 Jun',naipe:'Soprano'},{score:5.9,song:'Africa Rising',date:'21 Jun',naipe:'—'}];
+  document.getElementById('history-list-prof').innerHTML=items.map(i=>`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0.9rem;display:flex;align-items:center;gap:0.8rem;margin-bottom:0.6rem"><div style="font-size:1.4rem;font-weight:700;color:${i.score>=8?'var(--green2)':i.score>=6?'var(--gold)':'var(--red)'}">${i.score}</div><div style="flex:1"><div style="font-size:0.85rem;font-weight:500">${i.song}</div><div style="font-size:0.7rem;color:var(--muted);margin-top:0.1rem">${i.date}</div></div><div style="font-size:0.68rem;background:var(--border);color:var(--muted);padding:0.2rem 0.5rem;border-radius:20px">${i.naipe}</div></div>`).join('');
+}
+
+/* ═══ CERTIFICATE ═══ */
+function updateCert(){
+  const done=CHALLENGES.filter(c=>c.done).length;
+  const pct=done/12*100;
+  document.getElementById('cert-progress-fill').style.width=pct+'%';
+  document.getElementById('cert-progress-label').textContent=done+' de 12 desafios concluídos'+(done<12?' — complete todos para desbloquear':'');
+  const btn=document.getElementById('cert-download-btn');
+  const msg=document.getElementById('cert-locked-msg');
+  if(done>=12){btn.disabled=false;msg.textContent='✅ Certificado disponível para descarregar!';msg.style.color='var(--green2)';}
+  else{btn.disabled=true;msg.textContent='🔒 Complete todos os 12 desafios para receber o certificado';}
+}
+function downloadCert(){
+  alert('🏆 Certificado VozAfrika\n\nO seu certificado será enviado por email em formato PDF!\n\nParabéns por completar todos os desafios!');
+}
+
+/* ═══ RECORD ═══ */
+function toggleRecord(){
+  if(recording)return;
+  recording=true;
+  const btn=document.getElementById('mic-btn');
+  const ring=document.getElementById('mic-ring');
+  btn.classList.add('recording');btn.textContent='⏹';ring.classList.add('active');
+  document.getElementById('mic-status').textContent='🔴 A gravar... Cante agora!';
+  document.getElementById('score-display').classList.remove('show');
+  animateWave(true);
+  setTimeout(()=>{animateWave(false);document.getElementById('mic-status').textContent='⏳ A analisar...';btn.textContent='⏳';setTimeout(()=>showScore(),1200);},4000);
+}
+function animateWave(on){
+  const bars=document.querySelectorAll('#waveform .wbar');
+  clearInterval(waveInt);
+  if(on){waveInt=setInterval(()=>bars.forEach(b=>{b.style.height=(Math.random()*24+4)+'px';}),90);}
+  else{const h=[6,14,9,20,12,7,17,10,22,8,15,11];bars.forEach((b,i)=>b.style.height=h[i]+'px');}
+}
+function showScore(){
+  recording=false;
+  document.getElementById('mic-btn').classList.remove('recording');document.getElementById('mic-btn').textContent='🎤';document.getElementById('mic-ring').classList.remove('active');
+  const pitch=(Math.random()*3+6.5).toFixed(1),timbre=(Math.random()*3+5.5).toFixed(1),power=(Math.random()*3+5).toFixed(1),rhythm=(Math.random()*3+6).toFixed(1);
+  const total=Math.round((+pitch+ +timbre+ +power+ +rhythm)/4);
+  document.getElementById('score-num').innerHTML=total+'<span>/10</span>';
+  document.getElementById('score-verdict').textContent=VERDICTS[total]||VERDICTS[7];
+  document.getElementById('sc-pitch').textContent=pitch;document.getElementById('sc-timbre').textContent=timbre;document.getElementById('sc-power').textContent=power;document.getElementById('sc-rhythm').textContent=rhythm;
+  document.getElementById('mic-status').textContent='✓ Análise concluída';
+  setTimeout(()=>{
+    document.getElementById('sb1-fill').style.width=(+pitch*10)+'%';document.getElementById('sb2-fill').style.width=(+timbre*10)+'%';document.getElementById('sb3-fill').style.width=(+power*10)+'%';document.getElementById('sb4-fill').style.width=(+rhythm*10)+'%';
+    document.getElementById('sb1-v').textContent=Math.round(+pitch*10)+'%';document.getElementById('sb2-v').textContent=Math.round(+timbre*10)+'%';document.getElementById('sb3-v').textContent=Math.round(+power*10)+'%';document.getElementById('sb4-v').textContent=Math.round(+rhythm*10)+'%';
+  },100);
+  document.getElementById('feedback-box').textContent='💡 '+FEEDBACKS[Math.floor(Math.random()*FEEDBACKS.length)];
+  document.getElementById('score-display').classList.add('show');
+}
+function resetRecord(){document.getElementById('score-display').classList.remove('show');document.getElementById('mic-status').textContent='Toque para começar a gravar';['sb1-fill','sb2-fill','sb3-fill','sb4-fill'].forEach(id=>document.getElementById(id).style.width='0%');}
+
+/* ═══ MODAL ═══ */
+function openChallenge(id){
+  const c=CHALLENGES.find(x=>x.id===id);if(!c)return;
+  currentChallenge=c;
+  const song=SONGS.find(s=>s.id===c.songId);
+  document.getElementById('modal-title').textContent=c.emoji+' '+c.name;
+  document.getElementById('modal-sub').textContent=c.desc;
+  document.getElementById('modal-score').classList.remove('show');
+  challengeRecording=false;
+  document.getElementById('modal-rec-btn').textContent='🎙️ Gravar a minha versão';
+  document.getElementById('modal-rec-btn').style.background='linear-gradient(135deg,var(--gold),var(--terra))';
+  document.getElementById('modal-steps').innerHTML=c.steps.map((s,i)=>`<div class="guide-step"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('');
+  if(song){
+    document.getElementById('modal-melody').style.display='block';
+    document.getElementById('modal-melody-notes').innerHTML=song.melody.map(ni=>{const n=NOTES[ni-1]||NOTES[0];const pct=(ni/8)*100;return `<div class="mm-note" style="height:${pct}%;background:${n.color}22;border:1px solid ${n.color}44"><div class="mm-note-name" style="color:${n.color}">${n.name}</div></div>`;}).join('');
+    document.getElementById('lyrics-section').style.display='block';
+    document.getElementById('lyrics-box').innerHTML=song.lyrics.map((l,i)=>`<div class="lyrics-line" id="lyric-${i}">${l}</div>`).join('');
+  }
+  document.getElementById('modal').classList.add('open');
+}
+function openSong(id){const c=CHALLENGES.find(x=>x.songId===id);if(c){openChallenge(c.id);return;}const s=SONGS.find(x=>x.id===id);if(!s)return;currentChallenge={songId:id};document.getElementById('modal-title').textContent=s.emoji+' '+s.title;document.getElementById('modal-sub').textContent=s.artist+' · '+s.naipe;document.getElementById('modal-steps').innerHTML=`<div class="guide-step"><div class="step-num">1</div><div class="step-text">Ouça o guia de IA cantar</div></div><div class="guide-step"><div class="step-num">2</div><div class="step-text">Veja a melodia sobe e desce</div></div><div class="guide-step"><div class="step-num">3</div><div class="step-text">Grave e receba a sua nota</div></div>`;document.getElementById('modal-melody').style.display='block';document.getElementById('modal-melody-notes').innerHTML=s.melody.map(ni=>{const n=NOTES[ni-1]||NOTES[0];const pct=(ni/8)*100;return `<div class="mm-note" style="height:${pct}%;background:${n.color}22;border:1px solid ${n.color}44"><div class="mm-note-name" style="color:${n.color}">${n.name}</div></div>`;}).join('');document.getElementById('lyrics-section').style.display='block';document.getElementById('lyrics-box').innerHTML=s.lyrics.map((l,i)=>`<div class="lyrics-line" id="lyric-${i}">${l}</div>`).join('');document.getElementById('modal-score').classList.remove('show');document.getElementById('modal').classList.add('open');}
+function aiModalListen(){if(challengeListening)return;challengeListening=true;const btn=document.querySelector('.ai-listen-btn');btn.innerHTML='🎤 <span>A cantar... aguarde</span>';let idx=0;clearInterval(lyricInt);lyricInt=setInterval(()=>{document.querySelectorAll('.lyrics-line').forEach(l=>l.classList.remove('active'));const el=document.getElementById('lyric-'+idx);if(el)el.classList.add('active');idx++;const song=currentChallenge?SONGS.find(s=>s.id===currentChallenge.songId):null;if(!song||idx>=song.lyrics.length){clearInterval(lyricInt);document.querySelectorAll('.lyrics-line').forEach(l=>l.classList.remove('active'));btn.innerHTML='🎧 <span>Ouvir guia de IA cantar</span>';challengeListening=false;}},2000);}
+function startChallengeRecord(){if(challengeRecording)return;challengeRecording=true;const btn=document.getElementById('modal-rec-btn');btn.textContent='⏹ Parar gravação';btn.style.background='linear-gradient(135deg,var(--red),#8B1A2A)';setTimeout(()=>{btn.textContent='⏳ A analisar...';setTimeout(()=>{const pitch=(Math.random()*3+6.5).toFixed(1),timbre=(Math.random()*3+5.5).toFixed(1),power=(Math.random()*3+5).toFixed(1),rhythm=(Math.random()*3+6).toFixed(1);const total=Math.round((+pitch+ +timbre+ +power+ +rhythm)/4);document.getElementById('modal-score-num').innerHTML=total+'<span>/10</span>';document.getElementById('modal-score-verdict').textContent=VERDICTS[total]||VERDICTS[7];document.getElementById('msc-pitch').textContent=pitch;document.getElementById('msc-timbre').textContent=timbre;document.getElementById('msc-power').textContent=power;document.getElementById('msc-rhythm').textContent=rhythm;document.getElementById('modal-feedback').textContent='💡 '+FEEDBACKS[Math.floor(Math.random()*FEEDBACKS.length)];document.getElementById('modal-score').classList.add('show');if(currentChallenge&&currentChallenge.id){const c=CHALLENGES.find(x=>x.id===currentChallenge.id);if(c){c.done=true;c.score=total;renderChallenges();updateCert();}}btn.textContent='🎙️ Gravar novamente';btn.style.background='linear-gradient(135deg,var(--gold),var(--terra))';challengeRecording=false;},1500);},3500);}
+function closeModal(){document.getElementById('modal').classList.remove('open');clearInterval(lyricInt);challengeListening=false;challengeRecording=false;currentChallenge=null;}
+function closeModalOut(e){if(e.target===document.getElementById('modal'))closeModal();}
+
+/* ═══ SUBSCRIPTION ═══ */
+function selectPlan(plan){
+  selectedPlan=plan;
+  document.getElementById('plan-monthly').classList.toggle('selected',plan==='monthly');
+  document.getElementById('plan-annual').classList.toggle('selected',plan==='annual');
+  document.getElementById('radio-monthly').classList.toggle('checked',plan==='monthly');
+  document.getElementById('radio-annual').classList.toggle('checked',plan==='annual');
+}
+function selectPayMethod(method){
+  selectedPayMethod=method;
+  ['card','mpesa','paypal','emola'].forEach(m=>{
+    document.getElementById('pm-'+m).classList.toggle('selected',m===method);
+    const fields=document.getElementById(m+'-fields');
+    if(fields)fields.style.display=m===method?'block':'none';
+  });
+  document.getElementById('payment-fields').style.display=method==='card'?'block':'none';
+}
+function formatCard(el){let v=el.value.replace(/\D/g,'').substring(0,16);el.value=v.replace(/(.{4})/g,'$1 ').trim();}
+function formatExpiry(el){let v=el.value.replace(/\D/g,'');if(v.length>=2)v=v.substring(0,2)+'/'+v.substring(2,4);el.value=v;}
+function processPayment(){
+  // Redirecionar para Hotmart
+  window.open("https://pay.hotmart.com/E106512084I", "_blank");
+  return;
+  // codigo antigo abaixo:
+  const btn=document.getElementById('pay-btn');
+  btn.textContent='⏳ A processar...';btn.disabled=true;
+  setTimeout(()=>{
+    btn.textContent='🔒 Subscrever via Hotmart';btn.disabled=false;
+    isPro=true;
+    document.getElementById('success-overlay').classList.add('show');
+  },2000);
+}
+function closeSuccess(){document.getElementById('success-overlay').classList.remove('show');goTab('home');}
+
+/* ═══ INITIAL ═══ */
+updateCert();
+</script>
+
+<div id="pwa-banner" style="display:none;position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);width:calc(100% - 2rem);max-width:440px;background:linear-gradient(135deg,#1a0e02,#0d0d1a);border:1px solid #D4A843;border-radius:14px;padding:1rem 1.1rem;z-index:1000;box-shadow:0 8px 32px rgba(0,0,0,0.6)">
+  <div style="display:flex;align-items:center;gap:0.9rem">
+    <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#D4A843,#C05A32);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">🎤</div>
+    <div style="flex:1">
+      <div style="font-weight:700;font-size:0.88rem;color:#EAE6DD">Instalar VozAfrika</div>
+      <div style="font-size:0.72rem;color:#6A6A80;margin-top:0.1rem">Adicionar ao ecrã inicial — funciona como app</div>
+    </div>
+    <button onclick="document.getElementById('pwa-banner').style.display='none'" style="background:none;border:none;color:#6A6A80;font-size:1.2rem;cursor:pointer;padding:0.2rem">✕</button>
+  </div>
+  <button onclick="installPWA()" style="width:100%;margin-top:0.8rem;background:linear-gradient(135deg,#D4A843,#C05A32);color:#080810;border:none;border-radius:10px;padding:0.7rem;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:Inter,sans-serif">📲 Instalar agora — É grátis!</button>
+</div>
+
+<script>
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('pwa-banner').style.display = 'block';
+});
+
+function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((result) => {
+      if (result.outcome === 'accepted') {
+        document.getElementById('pwa-banner').style.display = 'none';
+        showInstallSuccess();
+      }
+      deferredPrompt = null;
+    });
+  } else {
+    // iOS instructions
+    alert('Para instalar no iPhone:\n\n1. Toque no botão de partilha (📤) no Safari\n2. Escolha "Adicionar ao ecrã inicial"\n3. Toque em "Adicionar"\n\nO VozAfrika fica no seu ecrã como uma app!');
+  }
+}
+
+function showInstallSuccess() {
+  const div = document.createElement('div');
+  div.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;font-family:Inter,sans-serif';
+  div.innerHTML = '<div style="font-size:4rem;margin-bottom:1rem">🎉</div><div style="font-family:Playfair Display,serif;font-size:1.8rem;font-weight:900;color:#D4A843;margin-bottom:0.5rem">VozAfrika instalado!</div><div style="font-size:0.9rem;color:#6A6A80;margin-bottom:1.5rem;line-height:1.6">O app foi adicionado ao seu ecrã inicial.<br>Pode abrir como qualquer outra app!</div><button onclick="this.parentElement.remove()" style="background:linear-gradient(135deg,#D4A843,#C05A32);color:#080810;border:none;border-radius:12px;padding:0.9rem 2rem;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:Inter,sans-serif">Começar a cantar 🎤</button>';
+  document.body.appendChild(div);
+}
+
+// Auto mostrar banner depois de 3s se não houver evento nativo
+setTimeout(() => {
+  if (!deferredPrompt) {
+    // iOS ou browser sem suporte nativo — mostrar mesmo assim
+    const banner = document.getElementById('pwa-banner');
+    if (banner) banner.style.display = 'block';
+  }
+}, 3000);
+</script>
+
+</body>
+</html>
